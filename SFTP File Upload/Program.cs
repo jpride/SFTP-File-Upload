@@ -10,8 +10,8 @@ namespace SFTP_File_Upload
     {
         const string host = "10.14.1.201"; //cp4
         const int port = 22;
-        const string username = "TSIAdmin";
-        const string password = "tsiGearP@ss1985";
+        const string username = "fileTestUser";
+        const string password = "fileTestPassword";
         const string workingdirectory = "/user/sharptestfile";
         //const string uploadfile = @"c:\Files\testfile.txt";
 
