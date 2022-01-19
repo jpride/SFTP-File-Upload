@@ -2,7 +2,7 @@
 using Renci.SshNet.Common;
 using System;
 using System.IO;
-using System.Net.Sockets;
+
 
 namespace SFTP_File_Upload
 {
@@ -10,18 +10,40 @@ namespace SFTP_File_Upload
     {
         const string host = "10.14.1.201"; //cp4
         const int port = 22;
-        const string username = "fileTestUser";
+        const string username = "fileTestUser"; //must create this user and password or use a known good one
         const string password = "fileTestPassword";
         const string workingdirectory = "/user/sharptestfile";
         //const string uploadfile = @"c:\Files\testfile.txt";
 
         static void Main(string[] args)
         {
+            ConnectionInfo connInfo = new ConnectionInfo(host, port, username,new AuthenticationMethod[]{new PasswordAuthenticationMethod(username, password),});
+
+            var sshclient = new SshClient(connInfo);
+            sshclient.Connect();
+            
+
+            if (sshclient.IsConnected)
+            {
+                Console.WriteLine("Ssh Client connected");
+                var cmd = sshclient.CreateCommand("ver");
+                var result = cmd.Execute();
+                Console.WriteLine($"Ver Result: {result}");
+            }
+
+            sshclient.Disconnect();
+            Console.WriteLine("sshclient disconnected");
+
+
+
+
+
+
             //files dropped onto this exe are imported as args...args[0] in partcular
             if (!(args.Length == 0))
             {
                 string uploadfile = Path.GetFullPath(args[0]);                      //get the full path of the file dropped
-                Console.WriteLine("Dropped file path: {0}", uploadfile);
+                Console.WriteLine("$ Dropped file path: {uploadfile}");
 
                 try
                 {
@@ -32,7 +54,7 @@ namespace SFTP_File_Upload
 
                     if (client.IsConnected)
                     {
-                        Console.WriteLine("Connected to {0}", host);
+                        Console.WriteLine($"Connected to {host}");
 
                         try
                         {
@@ -55,6 +77,8 @@ namespace SFTP_File_Upload
                         }
                         client.Disconnect();
                         Console.WriteLine("Disconnecting client.");
+
+
                     }
                 }
                 catch (Exception e)
