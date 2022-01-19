@@ -7,23 +7,25 @@ namespace SFTP_File_Upload
 {
     class Program
     {
-        const string host = "10.14.1.201";
+        const string host = "10.14.1.201"; //cp4
         const int port = 22;
         const string username = "TSIAdmin";
         const string password = "tsiGearP@ss1985";
         const string workingdirectory = "/user/sharptestfile";
-        const string uploadfile = @"c:\Files\testfile.txt";
+        //const string uploadfile = @"c:\Files\testfile.txt";
 
         static void Main(string[] args)
         {
+            //files dropped onto this exe are imported as args...args[0] in partcular
             if (!(args.Length == 0))
             {
-                string uploadfile = Path.GetFullPath(args[0]);
+                string uploadfile = Path.GetFullPath(args[0]);                  //get the full path of the file dropped
                 Console.WriteLine("Dropped file path: {0}", uploadfile);
-            
-                
-                using (var client = new SftpClient(host, port, username, password))
+
+                try
                 {
+                    var client = new SftpClient(host, port, username, password);
+
                     Console.WriteLine("Creating client and connecting");
                     client.Connect();
                     if (client.IsConnected)
@@ -52,6 +54,10 @@ namespace SFTP_File_Upload
                         client.Disconnect();
                         Console.WriteLine("Disconnecting client.");
                     }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error creating SftpClient: {0}", e.Message);
                 }
 
                 Console.Read();
