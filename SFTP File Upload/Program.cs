@@ -1,4 +1,5 @@
 ﻿using Renci.SshNet;
+using Renci.SshNet.Common;
 using System;
 using System.IO;
 using System.Net.Sockets;
@@ -19,15 +20,16 @@ namespace SFTP_File_Upload
             //files dropped onto this exe are imported as args...args[0] in partcular
             if (!(args.Length == 0))
             {
-                string uploadfile = Path.GetFullPath(args[0]);                  //get the full path of the file dropped
+                string uploadfile = Path.GetFullPath(args[0]);                      //get the full path of the file dropped
                 Console.WriteLine("Dropped file path: {0}", uploadfile);
 
                 try
                 {
-                    var client = new SftpClient(host, port, username, password);
+                    var client = new SftpClient(host, port, username, password);    //create an sftpclient
 
                     Console.WriteLine("Creating client and connecting");
-                    client.Connect();
+                    client.Connect();                                               //connect client
+
                     if (client.IsConnected)
                     {
                         Console.WriteLine("Connected to {0}", host);
@@ -37,7 +39,7 @@ namespace SFTP_File_Upload
                             client.ChangeDirectory(workingdirectory);
                             Console.WriteLine("Changed directory to {0}", workingdirectory);
                         }
-                        catch
+                        catch (SftpPathNotFoundException)
                         {
                             client.CreateDirectory(workingdirectory);
                             Console.WriteLine("Directory '{0}' does not exist. Creating...", workingdirectory);
