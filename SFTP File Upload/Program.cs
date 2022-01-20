@@ -10,33 +10,38 @@ namespace SFTP_File_Upload
     {
         const string host = "10.14.1.201"; //cp4
         const int port = 22;
-        const string username = "fileTestUser"; //must create this user and password or use a known good one
-        const string password = "fileTestPassword";
-        const string workingdirectory = "/user/sharptestfile";
-        //const string uploadfile = @"c:\Files\testfile.txt";
+        const string username = "TSIAdmin"; //must create this user and password or use a known good one
+        const string password = "tsiGearP@ss1985";
+        const string workingdirectory = "/USER/SSHTEST";
+        
 
         static void Main(string[] args)
         {
-            ConnectionInfo connInfo = new ConnectionInfo(host, port, username,new AuthenticationMethod[]{new PasswordAuthenticationMethod(username, password),});
+            ConnectionInfo connInfo = new ConnectionInfo(host, port, username,new AuthenticationMethod[]{new PasswordAuthenticationMethod(username, password)});
 
             var sshclient = new SshClient(connInfo);
-            sshclient.Connect();
+
+            try
+            {
+                sshclient.Connect();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error connecting ssh client: {e.Message}");
+                return;
+            }
             
 
             if (sshclient.IsConnected)
             {
                 Console.WriteLine("Ssh Client connected");
-                var cmd = sshclient.CreateCommand("ver");
+                var cmd = sshclient.CreateCommand("ipconfig /all");
                 var result = cmd.Execute();
                 Console.WriteLine($"Ver Result: {result}");
             }
 
             sshclient.Disconnect();
-            Console.WriteLine("sshclient disconnected");
-
-
-
-
+            Console.WriteLine("Ssh client disconnected");
 
 
             //files dropped onto this exe are imported as args...args[0] in partcular
